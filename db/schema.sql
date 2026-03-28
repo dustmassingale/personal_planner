@@ -5,6 +5,16 @@ CREATE TABLE IF NOT EXISTS values (
     description TEXT,
     selected INTEGER DEFAULT 0
 );
+
+CREATE TABLE IF NOT EXISTS weekly_plan (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    week_start DATE NOT NULL,
+    day TEXT NOT NULL,
+    social TEXT,
+    spiritual TEXT,
+    physical TEXT,
+    learning TEXT
+);
 CREATE TABLE IF NOT EXISTS values_table (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,

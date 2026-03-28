@@ -85,4 +85,6 @@ Alternative (Windows): run `start.bat` from the project root to start the server
 
 Fallback: If PHP's `pdo_sqlite` driver is not available, the app will use a local fallback store at `db/fallback.json` so development can continue without a full SQLite setup. This file is separate from agent memory and safe to modify during development.
 
+Weekly Plan: To use the guided weekly planner, open `/pages/weekly_plan.php`. The guided flow will let you select a week start, edit daily activities across four areas, review, and save. The planner persists to SQLite when available, otherwise to `db/fallback.json`.
+
 

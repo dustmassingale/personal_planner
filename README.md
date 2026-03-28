@@ -68,3 +68,21 @@ Visualize how your roles impact others. Define your roles and the expectations a
 4. Reflect on your roles and their impact.
 ~~~
 
+## Local Run (development)
+
+1. Ensure PHP 8 and the `pdo_sqlite` extension are available.
+2. Run the built-in PHP server from the project root:
+
+```bash
+php -S localhost:8000 -t .
+```
+
+3. Open http://localhost:8000/pages/values.php to define values.
+
+Note: The app stores data in `db/personal_planner.db` (SQLite). The `db/schema.sql` is applied automatically.
+
+Alternative (Windows): run `start.bat` from the project root to start the server.
+
+Fallback: If PHP's `pdo_sqlite` driver is not available, the app will use a local fallback store at `db/fallback.json` so development can continue without a full SQLite setup. This file is separate from agent memory and safe to modify during development.
+
+

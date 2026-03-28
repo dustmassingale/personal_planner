@@ -46,7 +46,7 @@ try {
             if ($name === '') { http_response_code(400); echo json_encode(['error'=>'name required']); break; }
             if ($pdo) {
                 $stmt = $pdo->prepare("INSERT INTO values (name, description, selected) VALUES (:name, :description, :selected)");
-                $stmt->execute([':name'=>$name, ':description'=>$description, ':selected'=>($input['selected']?1:0)]);
+                $stmt->execute([':name'=>$name, ':description'=>$description, ':selected'=>(isset($input['selected']) && $input['selected'])?1:0]);
                 $id = $pdo->lastInsertId();
                 $stmt = $pdo->prepare("SELECT id, name, description, selected FROM values WHERE id = :id");
                 $stmt->execute([':id'=>$id]);
@@ -54,7 +54,7 @@ try {
             } else {
                 $m = read_fallback();
                 $id = time() . rand(1000,9999);
-                $item = ['id'=>$id, 'name'=>$name, 'description'=>$description, 'selected'=>($input['selected']?1:0)];
+                $item = ['id'=>$id, 'name'=>$name, 'description'=>$description, 'selected'=>(isset($input['selected']) && $input['selected'])?1:0];
                 $m['values'][] = $item;
                 write_fallback($m);
                 echo json_encode($item);
@@ -70,7 +70,7 @@ try {
             if ($name === '') { http_response_code(400); echo json_encode(['error'=>'name required']); break; }
             if ($pdo) {
                 $stmt = $pdo->prepare("UPDATE values SET name = :name, description = :description, selected = :selected WHERE id = :id");
-                $stmt->execute([':name'=>$name, ':description'=>$description, ':selected'=>isset($input['selected'])?($input['selected']?1:0):0, ':id'=>$id]);
+                $stmt->execute([':name'=>$name, ':description'=>$description, ':selected'=> (isset($input['selected']) && $input['selected'])?1:0, ':id'=>$id]);
                 echo json_encode(['ok'=>true]);
             } else {
                 $m = read_fallback();

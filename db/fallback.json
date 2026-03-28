@@ -1,12 +1,49 @@
 {
-  "values": [
-    {
-      "id": "17747351539788",
-      "name": "Integrity",
-      "description": "Be honest"
-    }
-  ],
-  "goals": [],
-  "weeklyPlan": [],
-  "roles": []
+    "values": {
+        "1": {
+            "id": "17747364422438",
+            "name": "Family",
+            "description": "",
+            "selected": 0
+        },
+        "2": {
+            "id": "17747364475128",
+            "name": "Health",
+            "description": "",
+            "selected": 0
+        },
+        "3": {
+            "id": "17747364532380",
+            "name": "Growth",
+            "description": "",
+            "selected": 0
+        },
+        "4": {
+            "id": "17747364584004",
+            "name": "Integrity2",
+            "description": "",
+            "selected": 0
+        },
+        "5": {
+            "id": "17747366022224",
+            "name": "TestValueNoSelected",
+            "description": "",
+            "selected": 0
+        },
+        "6": {
+            "id": "17747366323831",
+            "name": "TestNoWarn",
+            "description": "",
+            "selected": 0
+        },
+        "7": {
+            "id": "17747368123253",
+            "name": "TST-A",
+            "description": "",
+            "selected": 0
+        }
+    },
+    "goals": [],
+    "weeklyPlan": [],
+    "roles": []
 }

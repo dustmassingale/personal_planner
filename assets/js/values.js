@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const namesList = document.getElementById('namesList');
   const nameCount = document.getElementById('nameCount');
   const toPhase2 = document.getElementById('toPhase2');
-
+  const toPhase2Msg = document.createElement('div'); toPhase2Msg.className='hint'; toPhase2.parentNode.appendChild(toPhase2Msg);
   const descContainer = document.getElementById('descContainer');
   const backTo1 = document.getElementById('backTo1');
   const toPhase3 = document.getElementById('toPhase3');
@@ -45,6 +45,12 @@ document.addEventListener('DOMContentLoaded', function () {
       namesList.appendChild(li);
     });
     nameCount.textContent = values.length;
+    // update toPhase2 state
+    if (values.length >= 5) {
+      toPhase2.classList.remove('btn-disabled'); toPhase2.disabled = false; toPhase2Msg.textContent='Good — you can continue to add descriptions.';
+    } else {
+      toPhase2.classList.add('btn-disabled'); toPhase2.disabled = true; toPhase2Msg.textContent='Enter at least 5 values before continuing.';
+    }
   }
 
   function renderDescEditor() {
@@ -70,6 +76,15 @@ document.addEventListener('DOMContentLoaded', function () {
       li.appendChild(cb); li.appendChild(span);
       selectList.appendChild(li);
     });
+    updateFinishState();
+  }
+
+  function updateFinishState() {
+    const cbs = Array.from(selectList.querySelectorAll('input[type=checkbox]'));
+    const selectedCount = cbs.filter(cb => cb.checked).length;
+    finishBtn.disabled = !(selectedCount >=3 && selectedCount <=5);
+    if (finishBtn.disabled) finishBtn.classList.add('btn-disabled'); else finishBtn.classList.remove('btn-disabled');
+    finishMsg.textContent = `Selected: ${selectedCount} (require 3–5)`;
   }
 
   function addValue(name) {
@@ -108,12 +123,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
   backTo2.addEventListener('click', ()=>{ setStep(2, 'Add descriptions.'); });
 
+  selectList.addEventListener('change', (e)=>{ if (e.target && e.target.type === 'checkbox') updateFinishState(); });
+
   finishBtn.addEventListener('click', ()=>{
-    // collect selected
     const cbs = Array.from(selectList.querySelectorAll('input[type=checkbox]'));
     const selected = cbs.filter(cb => cb.checked).map(cb => cb.dataset.id);
     if (selected.length < 3 || selected.length > 5) return alert('Please select between 3 and 5 core values.');
-    // update each value's selected flag
     const updates = values.map(v => ({ id: v.id, selected: selected.includes(String(v.id)) }));
     Promise.all(updates.map(u => updateValue(u.id, { name: values.find(x=>x.id==u.id).name, description: values.find(x=>x.id==u.id).description||'', selected: u.selected })))
       .then(()=>{ finishMsg.textContent = 'Core values saved.'; });

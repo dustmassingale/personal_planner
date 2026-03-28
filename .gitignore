@@ -1,5 +1,11 @@
-# Ignore the data store
+# Ignore the runtime data store
 memory/memory.json
+
+# Ignore SQLite database file
+*.db
+
+# Ignore deployment script (contains FTP credentials)
+deploy.bat
 
 # Ignore local environment files
 .env

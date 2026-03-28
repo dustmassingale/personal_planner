@@ -1,0 +1,6 @@
+# Ignore the data store
+memory/memory.json
+
+# Ignore local environment files
+.env
+.DS_Store

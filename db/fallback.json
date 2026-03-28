@@ -44,6 +44,25 @@
         }
     },
     "goals": [],
-    "weeklyPlan": [],
+    "weeklyPlan": [
+        {
+            "id": "17747373436557",
+            "week_start": "2026-03-28",
+            "day": "2026-03-28",
+            "social": "Call a friend",
+            "spiritual": "Prayer",
+            "physical": "Run",
+            "learning": "Read"
+        },
+        {
+            "id": "17747373432447",
+            "week_start": "2026-03-28",
+            "day": "2026-03-29",
+            "social": "Meet",
+            "spiritual": "Meditate",
+            "physical": "Yoga",
+            "learning": "Course"
+        }
+    ],
     "roles": []
 }

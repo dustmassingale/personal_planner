@@ -21,7 +21,7 @@
   <section id="wp-step3" class="card" style="display:none">
     <h2>Step 3 — Review</h2>
     <div id="review"></div>
-    <div style="margin-top:12px"><button id="backStep2">Back</button> <button id="confirmSave">Confirm & Finish</button></div>
+    <div style="margin-top:12px"><button id="backStep2">Back</button> <button id="confirmSave">Confirm & Finish</button> <button id="exportIcs">Export to Calendar</button></div>
   </section>
 
 </main>

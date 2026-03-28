@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const review = document.getElementById('review');
   const savePlan = document.getElementById('savePlan');
   const confirmSave = document.getElementById('confirmSave');
+  const exportIcs = document.getElementById('exportIcs');
   let planEntries = [];
 
   function setStep(n) { step1.style.display = n===1? '': 'none'; step2.style.display = n===2? '': 'none'; step3.style.display = n===3? '': 'none'; }
@@ -63,10 +64,18 @@ document.addEventListener('DOMContentLoaded', function() {
       .then(r=>r.json()).then(data=>{ alert('Plan saved'); console.log(data); setStep(1); });
   }
 
+  function exportCalendar() {
+    const ws = (planEntries[0] && planEntries[0].week_start) || weekStartInput.value;
+    if (!ws) return alert('No week selected');
+    const url = '/api/export_calendar.php?week_start=' + encodeURIComponent(ws);
+    window.open(url, '_blank');
+  }
+
   document.getElementById('backStep1').addEventListener('click', ()=> setStep(1));
   document.getElementById('backStep2').addEventListener('click', ()=> setStep(2));
   startBtn.addEventListener('click', startPlanning);
   savePlan.addEventListener('click', reviewPlan);
   confirmSave.addEventListener('click', saveToApi);
+  if (exportIcs) exportIcs.addEventListener('click', exportCalendar);
   setStep(1);
 });

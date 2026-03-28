@@ -1,7 +1,6 @@
 <?php
 header('Location: /pages/values.php');
 exit;
-<?php
 // Main entry point and routing
 $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
 

@@ -1,17 +1,43 @@
 <?php require_once __DIR__ . '/../components/header.php'; ?>
 
 <main class="container">
-  <h1>Define Your Values</h1>
+    <h1>Define Your Values</h1>
 
-  <section id="add" class="card">
-    <input id="valueName" placeholder="Value name (e.g. Integrity)" />
-    <input id="valueDesc" placeholder="Description (optional)" />
-    <button id="addBtn">Add Value</button>
-  </section>
+    <nav class="card">
+        <strong>Step: <span id="stepLabel">1</span> / 3</strong>
+        <div id="stepHint">Enter 5–10 value names to start.</div>
+    </nav>
 
-  <section class="card">
-    <ul id="valuesList" class="values-list"></ul>
-  </section>
+    <section id="phase1" class="card">
+        <h2>Phase 1 — Enter Names</h2>
+        <input id="valueName" placeholder="Add a value name (e.g. Integrity)" />
+        <button id="addBtn">Add name</button>
+        <p>Names entered: <span id="nameCount">0</span> (recommended 5–10)</p>
+        <ul id="namesList" class="values-list"></ul>
+        <div>
+            <button id="toPhase2">Next: Add descriptions</button>
+        </div>
+    </section>
+
+    <section id="phase2" class="card" style="display:none">
+        <h2>Phase 2 — Add Descriptions</h2>
+        <div id="descContainer"></div>
+        <div>
+            <button id="backTo1">Back</button>
+            <button id="toPhase3">Next: Select core values</button>
+        </div>
+    </section>
+
+    <section id="phase3" class="card" style="display:none">
+        <h2>Phase 3 — Pick Core Values</h2>
+        <p>Select 3–5 values to be your core values.</p>
+        <ul id="selectList" class="values-list"></ul>
+        <div>
+            <button id="backTo2">Back</button>
+            <button id="finishBtn">Finish</button>
+        </div>
+        <div id="finishMsg" style="margin-top:12px"></div>
+    </section>
 </main>
 
 <script src="/assets/js/values.js"></script>

@@ -1,8 +1,9 @@
 -- SQLite schema for Personal Planner
 CREATE TABLE IF NOT EXISTS values (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL,
-  description TEXT
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    description TEXT,
+    selected INTEGER DEFAULT 0
 );
 CREATE TABLE IF NOT EXISTS values_table (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

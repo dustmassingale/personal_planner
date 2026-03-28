@@ -1,63 +1,125 @@
 document.addEventListener('DOMContentLoaded', function () {
-  const list = document.getElementById('valuesList');
-  const addBtn = document.getElementById('addBtn');
-  const nameInput = document.getElementById('valueName');
-  const descInput = document.getElementById('valueDesc');
+  const stepLabel = document.getElementById('stepLabel');
+  const stepHint = document.getElementById('stepHint');
 
-  function fetchList() {
-    fetch('/api/values.php')
-      .then(r => r.json())
-      .then(render)
-      .catch(err => console.error(err));
+  const phase1 = document.getElementById('phase1');
+  const phase2 = document.getElementById('phase2');
+  const phase3 = document.getElementById('phase3');
+
+  const nameInput = document.getElementById('valueName');
+  const addBtn = document.getElementById('addBtn');
+  const namesList = document.getElementById('namesList');
+  const nameCount = document.getElementById('nameCount');
+  const toPhase2 = document.getElementById('toPhase2');
+
+  const descContainer = document.getElementById('descContainer');
+  const backTo1 = document.getElementById('backTo1');
+  const toPhase3 = document.getElementById('toPhase3');
+
+  const selectList = document.getElementById('selectList');
+  const backTo2 = document.getElementById('backTo2');
+  const finishBtn = document.getElementById('finishBtn');
+  const finishMsg = document.getElementById('finishMsg');
+
+  let values = [];
+
+  function setStep(n, hint) {
+    stepLabel.textContent = n;
+    stepHint.textContent = hint || '';
+    phase1.style.display = n===1?'' : 'none';
+    phase2.style.display = n===2?'' : 'none';
+    phase3.style.display = n===3?'' : 'none';
   }
 
-  function render(items) {
-    list.innerHTML = '';
-    items.forEach(item => {
+  function fetchValues() {
+    return fetch('/api/values.php').then(r => r.json()).then(list => { values = list||[]; return values; });
+  }
+
+  function renderNames() {
+    namesList.innerHTML = '';
+    values.forEach(v => {
       const li = document.createElement('li');
-      li.innerHTML = `<strong>${escapeHtml(item.name)}</strong> - ${escapeHtml(item.description || '')}`;
-      const editBtn = document.createElement('button'); editBtn.textContent = 'Edit'; editBtn.dataset.id = item.id; editBtn.className = 'edit';
-      const delBtn = document.createElement('button'); delBtn.textContent = 'Delete'; delBtn.dataset.id = item.id; delBtn.className = 'del';
-      li.appendChild(editBtn); li.appendChild(delBtn);
-      list.appendChild(li);
+      li.textContent = v.name;
+      const del = document.createElement('button'); del.textContent='Delete'; del.onclick = () => removeValue(v.id);
+      li.appendChild(del);
+      namesList.appendChild(li);
+    });
+    nameCount.textContent = values.length;
+  }
+
+  function renderDescEditor() {
+    descContainer.innerHTML = '';
+    values.forEach(v => {
+      const div = document.createElement('div');
+      div.className = 'card';
+      const label = document.createElement('label'); label.textContent = v.name;
+      const input = document.createElement('input'); input.value = v.description || ''; input.style.width='100%';
+      const save = document.createElement('button'); save.textContent='Save';
+      save.onclick = () => updateValue(v.id, { name: v.name, description: input.value });
+      div.appendChild(label); div.appendChild(input); div.appendChild(save);
+      descContainer.appendChild(div);
     });
   }
 
-  addBtn.addEventListener('click', function () {
+  function renderSelector() {
+    selectList.innerHTML = '';
+    values.forEach(v => {
+      const li = document.createElement('li');
+      const cb = document.createElement('input'); cb.type='checkbox'; cb.checked = !!v.selected; cb.dataset.id = v.id;
+      const span = document.createElement('span'); span.textContent = `${v.name} — ${v.description||''}`;
+      li.appendChild(cb); li.appendChild(span);
+      selectList.appendChild(li);
+    });
+  }
+
+  function addValue(name) {
+    return fetch('/api/values.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ name }) }).then(()=>fetchValues()).then(renderNames);
+  }
+
+  function updateValue(id, body) {
+    return fetch('/api/values.php?id=' + encodeURIComponent(id), { method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) }).then(()=>fetchValues()).then(()=>{ renderDescEditor(); renderSelector(); renderNames(); });
+  }
+
+  function removeValue(id) {
+    if (!confirm('Delete this value?')) return;
+    return fetch('/api/values.php?id=' + encodeURIComponent(id), { method:'DELETE' }).then(()=>fetchValues()).then(()=>{ renderNames(); renderDescEditor(); renderSelector(); });
+  }
+
+  addBtn.addEventListener('click', () => {
     const name = nameInput.value.trim();
-    const description = descInput.value.trim();
-    if (!name) return alert('Name is required');
-    fetch('/api/values.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: name, description: description })
-    }).then(() => { nameInput.value = ''; descInput.value = ''; fetchList(); });
+    if (!name) return alert('Name required');
+    addValue(name).then(()=>{ nameInput.value=''; });
   });
 
-  list.addEventListener('click', function (e) {
-    if (e.target.classList.contains('del')) {
-      const id = e.target.dataset.id;
-      if (!confirm('Delete this value?')) return;
-      fetch('/api/values.php?id=' + encodeURIComponent(id), { method: 'DELETE' }).then(() => fetchList());
+  toPhase2.addEventListener('click', () => {
+    if (values.length < 5) return alert('Please enter at least 5 values before continuing.');
+    if (values.length > 10) {
+      if (!confirm('You entered more than 10 values. Continue anyway?')) return;
     }
-
-    if (e.target.classList.contains('edit')) {
-      const id = e.target.dataset.id;
-      const li = e.target.closest('li');
-      const currentName = li.querySelector('strong').textContent;
-      const currentDesc = li.childNodes[2] ? li.childNodes[2].textContent.replace(' - ', '') : '';
-      const newName = prompt('Edit value name', currentName);
-      if (newName === null) return;
-      const newDesc = prompt('Edit description', currentDesc);
-      fetch('/api/values.php?id=' + encodeURIComponent(id), {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: newName, description: newDesc })
-      }).then(() => fetchList());
-    }
+    setStep(2, 'Add a short personal description for each value.');
+    renderDescEditor();
   });
 
-  function escapeHtml(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  backTo1.addEventListener('click', () => { setStep(1, 'Enter 5–10 value names to start.'); });
+  toPhase3.addEventListener('click', ()=>{
+    setStep(3, 'Select 3–5 core values.');
+    renderSelector();
+  });
 
-  fetchList();
+  backTo2.addEventListener('click', ()=>{ setStep(2, 'Add descriptions.'); });
+
+  finishBtn.addEventListener('click', ()=>{
+    // collect selected
+    const cbs = Array.from(selectList.querySelectorAll('input[type=checkbox]'));
+    const selected = cbs.filter(cb => cb.checked).map(cb => cb.dataset.id);
+    if (selected.length < 3 || selected.length > 5) return alert('Please select between 3 and 5 core values.');
+    // update each value's selected flag
+    const updates = values.map(v => ({ id: v.id, selected: selected.includes(String(v.id)) }));
+    Promise.all(updates.map(u => updateValue(u.id, { name: values.find(x=>x.id==u.id).name, description: values.find(x=>x.id==u.id).description||'', selected: u.selected })))
+      .then(()=>{ finishMsg.textContent = 'Core values saved.'; });
+  });
+
+  // initial load
+  fetchValues().then(()=>{ renderNames(); setStep(1, 'Enter 5–10 value names to start.'); });
+
 });

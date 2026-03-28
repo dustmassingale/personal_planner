@@ -31,7 +31,7 @@ try {
     switch ($method) {
         case 'GET':
             if ($pdo) {
-                $stmt = $pdo->query("SELECT id, name, description FROM values ORDER BY id DESC");
+                $stmt = $pdo->query("SELECT id, name, description, selected FROM values ORDER BY id DESC");
                 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 echo json_encode($rows);
             } else {
@@ -45,16 +45,16 @@ try {
             $description = trim($input['description'] ?? '');
             if ($name === '') { http_response_code(400); echo json_encode(['error'=>'name required']); break; }
             if ($pdo) {
-                $stmt = $pdo->prepare("INSERT INTO values (name, description) VALUES (:name, :description)");
-                $stmt->execute([':name'=>$name, ':description'=>$description]);
+                $stmt = $pdo->prepare("INSERT INTO values (name, description, selected) VALUES (:name, :description, :selected)");
+                $stmt->execute([':name'=>$name, ':description'=>$description, ':selected'=>($input['selected']?1:0)]);
                 $id = $pdo->lastInsertId();
-                $stmt = $pdo->prepare("SELECT id, name, description FROM values WHERE id = :id");
+                $stmt = $pdo->prepare("SELECT id, name, description, selected FROM values WHERE id = :id");
                 $stmt->execute([':id'=>$id]);
                 echo json_encode($stmt->fetch(PDO::FETCH_ASSOC));
             } else {
                 $m = read_fallback();
                 $id = time() . rand(1000,9999);
-                $item = ['id'=>$id, 'name'=>$name, 'description'=>$description];
+                $item = ['id'=>$id, 'name'=>$name, 'description'=>$description, 'selected'=>($input['selected']?1:0)];
                 $m['values'][] = $item;
                 write_fallback($m);
                 echo json_encode($item);
@@ -69,14 +69,14 @@ try {
             $description = trim($input['description'] ?? '');
             if ($name === '') { http_response_code(400); echo json_encode(['error'=>'name required']); break; }
             if ($pdo) {
-                $stmt = $pdo->prepare("UPDATE values SET name = :name, description = :description WHERE id = :id");
-                $stmt->execute([':name'=>$name, ':description'=>$description, ':id'=>$id]);
+                $stmt = $pdo->prepare("UPDATE values SET name = :name, description = :description, selected = :selected WHERE id = :id");
+                $stmt->execute([':name'=>$name, ':description'=>$description, ':selected'=>isset($input['selected'])?($input['selected']?1:0):0, ':id'=>$id]);
                 echo json_encode(['ok'=>true]);
             } else {
                 $m = read_fallback();
                 $found = false;
                 foreach ($m['values'] as &$v) {
-                    if ($v['id'] == $id) { $v['name']=$name; $v['description']=$description; $found=true; break; }
+                    if ($v['id'] == $id) { $v['name']=$name; $v['description']=$description; $v['selected']=isset($input['selected'])?($input['selected']?1:0):0; $found=true; break; }
                 }
                 if (!$found) { http_response_code(404); echo json_encode(['error'=>'not found']); break; }
                 write_fallback($m);

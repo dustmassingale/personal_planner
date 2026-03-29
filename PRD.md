@@ -22,3 +22,8 @@ What are the key features?
     11. **Fitness Trainer** Provides workout routines, timed with a circuit for people with or without equipment. An AI agent will help you with your workout.
     12. **Meal Planner** Provides meal plans for the week, with a shopping list and a grocery store locator. An AI agent will help you with your meal planning.
     13. 
+
+Technical Requirements
+
+- **Separation of concerns:** UI markup must be kept in `components/partials/*.html` and JavaScript behavior in `assets/js/*.js`. Avoid inline handlers like `onclick` in markup; use event-driven patterns (custom events, data-attributes) so behavior can be swapped or tested independently.
+

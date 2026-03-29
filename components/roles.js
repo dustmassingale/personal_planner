@@ -1,18 +1,16 @@
 // components/roles.js
 
-function RolesPage() {
-  document.getElementById("app").innerHTML = `
-    <div class="page-fade">
-      <div class="w3-row" style="margin-bottom:16px;">
-        <div class="w3-col s8"><h2 class="w3-text-blue" style="margin:0;">Your Roles</h2></div>
-        <div class="w3-col s4" style="text-align:right;">
-          <button class="w3-button w3-green" onclick="showAddRole()">+ Add Role</button>
-        </div>
-      </div>
-      <p class="w3-text-grey">Who are you responsible to? Parent, spouse, leader, professional…</p>
-      <div id="rolesList"><div class="loading">Loading…</div></div>
-    </div>
-  `;
+async function RolesPage() {
+  const app = document.getElementById("app");
+    // Load the roles.html partial using fetch (replaces jQuery .load)
+    try {
+      const resp = await fetch('components/partials/roles.html');
+      if (!resp.ok) throw new Error('Failed to load roles partial: ' + resp.status + ' ' + resp.statusText);
+      app.innerHTML = await resp.text();
+    } catch (err) {
+      // Surface a descriptive error to the caller (loadRoles will not run)
+      throw new Error('Failed to load roles partial: ' + err.message);
+    }
   loadRoles();
 }
 
@@ -41,11 +39,24 @@ function renderRoles() {
             <small class="w3-text-grey">${escHtml(r.description || "")}</small><br>
             ${r.impact ? `<small><em>Impact: ${escHtml(r.impact)}</em></small>` : ""}
           </div>
-          <button class="w3-button w3-tiny w3-red" onclick="deleteRole(${r.id})">✕</button>
+          <button class="w3-button w3-tiny w3-red delete-role" data-id="${r.id}">✕</button>
         </div>
       </div>
     </div>
   `).join("");
+  attachRoleHandlers();
+}
+
+function attachRoleHandlers() {
+  const buttons = document.querySelectorAll('#rolesList .delete-role');
+  buttons.forEach(btn => {
+    // remove any previously attached handler to avoid duplicates
+    if (btn._handler) btn.removeEventListener('click', btn._handler);
+    const id = btn.getAttribute('data-id');
+    const handler = function () { deleteRole(id); };
+    btn.addEventListener('click', handler);
+    btn._handler = handler;
+  });
 }
 
 function showAddRole() {

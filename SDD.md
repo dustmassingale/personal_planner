@@ -148,6 +148,14 @@ Each component will have its own dedicated file. The project structure is as fol
 └── /assets                    # Static assets
     ├── /css
     └── /js
+
+### 3.1 Separation of Markup and Behavior
+
+- **Goal:** Keep HTML markup and JavaScript behavior separate to improve maintainability, testability, and reusability.
+- **Pattern:** Store static HTML fragments in `components/partials/*.html`. Place all interactive behavior in `assets/js/*.js` (or `components/*.js` for component-specific logic).
+- **Event-driven:** Prefer custom events and data-attributes for communication between markup and scripts rather than inline `onclick` handlers. Example: partials emit or listen for a `showAddRole` event; script attaches listeners on DOMContentLoaded.
+- **Benefits:** Easier unit testing of JS, simpler visual edits to markup, clearer separation of concerns for future refactors or server-side rendering.
+
 ```
 
 ---

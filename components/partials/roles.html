@@ -1,0 +1,30 @@
+<div class="page-fade">
+	<div class="w3-row" style="margin-bottom:16px;">
+		<div class="w3-col s8"><h2 class="w3-text-blue" style="margin:0;">Your Roles</h2></div>
+		<div class="w3-col s4" style="text-align:right;">
+			<button class="w3-button w3-green" id="addRoleBtn">+ Add Role</button>
+		</div>
+	</div>
+
+	<p class="w3-text-grey">Who are you responsible to? Parent, spouse, leader, professional…</p>
+
+	<div id="rolesList"><div class="loading">Loading…</div></div>
+</div>
+
+<script>
+	// Attach click handler to the Add Role button if `showAddRole` exists.
+	(function(){
+		function attach() {
+			var btn = document.getElementById('addRoleBtn');
+			if (!btn) return;
+			btn.addEventListener('click', function(){
+				if (typeof showAddRole === 'function') return showAddRole();
+				// fallback: dispatch a custom event so other code can handle it
+				var ev = new CustomEvent('showAddRole');
+				document.dispatchEvent(ev);
+			});
+		}
+		if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', attach);
+		else attach();
+	})();
+</script>

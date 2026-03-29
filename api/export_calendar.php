@@ -1,13 +1,15 @@
 <?php
-require_once __DIR__ . '/weekly_plan.php';
-// weekly_plan.php defines PDO/fallback helpers; reuse them by requiring it
+require_once __DIR__ . '/../db/connection.php';
 
 // Expect GET param week_start=YYYY-MM-DD
 $week_start = $_GET['week_start'] ?? null;
 if (!$week_start) { http_response_code(400); echo 'week_start required'; exit; }
 
-// Reuse read_fallback_wp and $pdo if available by reloading connection
+// Try DB connection, fall back to fallback JSON helpers
 try { $pdo = get_db(); } catch (Exception $e) { $pdo = null; }
+
+function fallback_path_wp() { return __DIR__ . '/../db/fallback.json'; }
+function read_fallback_wp() { $p = fallback_path_wp(); if (!file_exists($p)) return ['weeklyPlan'=>[]]; $s = file_get_contents($p); return json_decode($s, true) ?: ['weeklyPlan'=>[]]; }
 
 // Fetch entries for the week
 if ($pdo) {

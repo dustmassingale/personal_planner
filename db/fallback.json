@@ -62,6 +62,42 @@
             "spiritual": "Meditate",
             "physical": "Yoga",
             "learning": "Course"
+        },
+        {
+            "id": "17747409479231",
+            "week_start": "2026-03-28",
+            "day": "2026-03-28",
+            "social": "Call a friend",
+            "spiritual": "Prayer",
+            "physical": "Run",
+            "learning": "Read"
+        },
+        {
+            "id": "17747409476227",
+            "week_start": "2026-03-28",
+            "day": "2026-03-29",
+            "social": "Meet",
+            "spiritual": "Meditate",
+            "physical": "Yoga",
+            "learning": "Course"
+        },
+        {
+            "id": "17747409793496",
+            "week_start": "2026-03-28",
+            "day": "2026-03-28",
+            "social": "Call a friend",
+            "spiritual": "Prayer",
+            "physical": "Run",
+            "learning": "Read"
+        },
+        {
+            "id": "17747409794182",
+            "week_start": "2026-03-28",
+            "day": "2026-03-29",
+            "social": "Meet",
+            "spiritual": "Meditate",
+            "physical": "Yoga",
+            "learning": "Course"
         }
     ],
     "roles": []
